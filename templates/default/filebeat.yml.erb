@@ -1,21 +1,48 @@
 filebeat:
   prospectors:
+    <% if node['beats']['filebeat']['prospectors'].include?('linux-default') -%>
     -
-    <% if node['beats']['filebeat']['prospectors'].include?('linux') -%>
       paths:
         - /var/log/*.log
+        - /var/log/audit/*.log
       input_type: log
       fields:
         environment: <%= node['domain'] %>
-        datacenter: vagrant
         service: linux
       document_type: log
+    <% end -%>
+    <% if node['beats']['filebeat']['prospectors'].include?('linux-web') -%>
+    -
+      paths:
+        - /var/log/nginx/*.log
+      input_type: log
+      fields:
+        environment: <%= node['domain'] %>
+        service: web
+      document_type: nginx
+    -
+      paths:
+        - /var/log/httpd/*.log
+        - /var/log/apache2/*.log
+      input_type: log
+      fields:
+        environment: <%= node['domain'] %>
+        service: web
+      document_type: apache
+    -
+      paths:
+        - /var/log/tomcat/*.log
+      input_type: log
+      fields:
+        environment: <%= node['domain'] %>
+        service: web
+      document_type: tomcat
     <% end -%>
   registry_file: /var/lib/filebeat/registry
 
 output:
   logstash:
-    hosts: ["localhost:5044"]
+    hosts: [<%= node['logstash']['hosts'].map {|h| '"' + h.to_s + '"' }.join(', ') %>]
     index: filebeat
   console:
     pretty: true

@@ -8,7 +8,7 @@ default['elasticsearch']['hosts'] = []
 
 # logstash
 default['logstash']['version'] = '2.3.2'
-default['logstash']['hosts'] = []
+default['logstash']['hosts'] = [ '127.0.0.1:5044' ]
 default['logstash']['plugins'] = [ 'logstash-input-beats' ]
 default['logstash']['configs'] = [ 'logstash-filebeat' ]
 
@@ -18,4 +18,4 @@ default['kibana']['version'] = '4.5.0'
 # beats
 default['beats']['install_list'] = [ 'filebeat' ]
 default['beats']['filebeat']['version'] = '1.2.2'
-default['beats']['filebeat']['prospectors'] = [ 'linux' ]
+default['beats']['filebeat']['prospectors'] = [ 'linux-default' ]
